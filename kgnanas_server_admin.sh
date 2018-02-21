@@ -1,6 +1,6 @@
 #!/bin/bash
 
-EMP_INFO=/home/scripting_admin/hw2/empinfo.csv
+EMP_INFO=~/hw2/empinfo.csv
 PASSWD_FILE=/etc/passwd
 GROUP_FILE=/etc/group
 
@@ -37,12 +37,8 @@ case $action in
 			user_exists=$(($user_exists+1))
 	   	else
 			useradd $username > /dev/null 2>&1
-			cat << EOF | passwd $username
-$password
-$password
-EOF
-echo "$password hello"
-			# echo "$username":"$password" | chpasswd
+			password=$(echo "$password" | tr -d '\r')
+			echo "$username":"$password" | chpasswd
 			echo "Added user $username with password $password"
 			user_added=$(($user_added+1))
 	   	fi
@@ -129,7 +125,7 @@ echo "$password hello"
 			if [ -n "$user_group" ]; then
 				usermod -G "" $username > /dev/null 2>&1
 				echo "User $username was removed from group $group"
-				group_dissociations=$(($group_dissociations+1))				
+				group_dissociations=$(($group_dissociations+1))
 			else
 				echo "User $username does not belong to group $group. Skipping"
 				not_dissociated=$(($not_dissociated+1))
